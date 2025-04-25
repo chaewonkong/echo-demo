@@ -61,10 +61,12 @@ r.e.Add(route.Method, routeGroup.Prefix+route.Path, route.Handler, route.Middlew
 
 ```text
 .
+├── cmd/ 
+│   └── main.go         # Main entry point
 ├── handler/            # Business logic handlers
 ├── route/              # Route definitions per domain
 ├── router/             # Router orchestrator
-├── main.go             # Entry point
+└── server/             # Server initialization and run
 ```
 
 ## ✅ Benefits

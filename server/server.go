@@ -1,7 +1,6 @@
-package main
+package server
 
 import (
-	"errors"
 	"log/slog"
 	"os"
 
@@ -11,19 +10,19 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-func main() {
-	err := run()
-	if err != nil {
-		slog.Default().Error("failed to run server", "error", err)
-		os.Exit(1)
-	}
-}
+const (
+	exitZero = iota
+	exitNonZero
+)
 
-func run() error {
-	// load env
+// Run initializes and runs echo server application
+func Run() int {
+	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+
 	port := os.Getenv("PORT")
 	if port == "" {
-		return errors.New("port not set")
+		logger.Error("port not set")
+		return exitNonZero
 	}
 
 	e := echo.New()
@@ -34,5 +33,11 @@ func run() error {
 		route.PostRoutes,
 	)
 
-	return nil
+	err := e.Start(":" + port)
+	if err != nil {
+		logger.Error("failed to start server", "error", err)
+		return exitNonZero
+	}
+
+	return exitZero
 }
